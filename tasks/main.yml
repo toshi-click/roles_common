@@ -1,0 +1,64 @@
+---
+- name: "create group {{ manage_user_group }}"
+  group:
+    name: "{{ manage_user_group }}"
+
+- name: "users exist {{ manage_user_name }}  {{ manage_user_group }}"
+  user:
+    name: "{{ manage_user_name }}"
+    state: present
+    password: "{{ manage_user.password }}"
+    group: "{{ manage_user_group }}"
+    shell: /bin/bash
+
+- name: "directory create /home/{{ manage_user_name }}/.ssh"
+  file:
+    path: "/home/{{ manage_user_name }}/.ssh"
+    state: directory
+    owner: "{{ manage_user_name }}"
+    group: "{{ manage_user_group }}"
+    mode: 0700
+
+# add key
+- name: authorized_keys
+  copy:
+    src: "home/manage_user/.ssh/authorized_keys"
+    dest: "/home/{{ manage_user_name }}/.ssh/authorized_keys"
+    owner: "{{ manage_user_name }}"
+    group: "{{ manage_user_group }}"
+    mode: 0600
+
+- name: set profile
+  copy:
+    src: "home/manage_user/.profile"
+    dest: "/home/{{ manage_user_name }}/.profile"
+    owner: "{{ manage_user_name }}"
+    group: "{{ manage_user_group }}"
+    mode: 0644
+
+- name: set bashrc
+  copy:
+    src: "home/manage_user/.bashrc"
+    dest: "/home/{{ manage_user_name }}/.bashrc"
+    owner: "{{ manage_user_name }}"
+    group: "{{ manage_user_group }}"
+    mode: 0644
+
+- name: include distribution tasks
+  include_tasks: '{{ loop_distribution }}'
+  with_first_found:
+    - files:
+        - '{{ distribution }}-{{ distribution_version }}.yml'
+        - '{{ distribution }}-{{ distribution_major_version }}.yml'
+        - '{{ distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+        - '{{ ansible_system }}.yml'
+        - 'defaults.yml'
+      paths:
+        - 'distribution'
+  loop_control:
+    loop_var: loop_distribution
+  vars:
+    distribution: '{{ ansible_distribution }}'
+    distribution_version: '{{ ansible_distribution_version }}'
+    distribution_major_version: '{{ ansible_distribution_major_version }}'

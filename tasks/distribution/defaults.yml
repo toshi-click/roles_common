@@ -1,0 +1,111 @@
+---
+- name: add kernel parameters and reload
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: yes
+    sysctl_file: /etc/sysctl.d/common.conf
+  with_items:
+    - name: vm.max_map_count
+      value: 262144
+    - name: net.ipv4.ip_forward
+      value: 1
+    - name: net.core.somaxconn
+      value: 65535
+    - name: net.ipv4.tcp_max_syn_backlog
+      value: 65535
+    - name: net.core.netdev_max_backlog
+      value: 16384
+    - name: net.ipv4.conf.all.forwarding
+      value: 1
+
+- name: "change hostname to {{ hostname }}"
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Generate /etc/hosts file
+  template:
+    src: "etc/hosts"
+    dest: "/etc/hosts"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "create group {{ ansible_user_group }}"
+  group:
+    name: "{{ ansible_user_group }}"
+
+- name: "users exist name:{{ ansible_user_name }} group:{{ ansible_user_group }}"
+  user:
+    name: "{{ ansible_user_name }}"
+    state: present
+    password: "{{ ansible_user_password }}"
+    group: "{{ ansible_user_group }}"
+
+- name: "directory create /home/{{ ansible_user_name }}/.ssh"
+  file:
+    path: "/home/{{ ansible_user_name }}/.ssh"
+    state: directory
+    owner: "{{ ansible_user_name }}"
+    group: "{{ ansible_user_group }}"
+    mode: 0700
+
+- name: "create /home/{{ ansible_user_name }}/.ssh/config"
+  template:
+    src: "home/ansible/.ssh/config"
+    dest: "/home/{{ ansible_user_name }}/.ssh/config"
+    owner: "{{ ansible_user_name }}"
+    group: "{{ ansible_user_group }}"
+    mode: 0600
+
+# add key
+- name: authorized_keys
+  template:
+    src: "home/ansible/.ssh/authorized_keys"
+    dest: "/home/{{ ansible_user_name }}/.ssh/authorized_keys"
+    owner: "{{ ansible_user_name }}"
+    group: "{{ ansible_user_group }}"
+    mode: 0600
+
+- name: "create project root directory {{ project_root_dir }}"
+  file:
+    path: "{{ project_root_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "create project cert directory {{ project_cert_dir }}"
+  file:
+    path: "{{ project_cert_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "create project script directory {{ script_dir }}"
+  file:
+    path: "{{ script_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "create project config directory {{ config_dir }}"
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: restart postfix
+  systemd:
+    name: postfix
+    state: restarted
+    enabled: yes
+
+- name: newaliases
+  command: newaliases
+  check_mode: no

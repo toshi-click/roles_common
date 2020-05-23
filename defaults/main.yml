@@ -1,0 +1,20 @@
+---
+manage_user_name: toshi
+manage_user_group: toshi
+# パスワード生成は「python -c 'import crypt; print crypt.crypt("password", "$6$toshitoshi$")'」
+manage_user_password: $6$toshitoshi$oxKYPA6cfnFjlHmwVDQBsycKd.wedzL4u1Twb7I.ZFzf61BUr.wsAXqQpoW6z.CzqbgJhrCrN7ZNEzF3n642y1
+
+hostname: "{{ inventory_hostname }}"
+
+hosts_setting:
+  - {name: "localhost", ip: 127.0.0.1}
+
+ansible_user_name: ansible
+ansible_user_group: ansible
+# パスワード生成は「python -c 'import crypt; print crypt.crypt("password", "$6$ansible$")'」などで。
+ansible_user_password: $6$ansible$LFMRmnf/CqZF6hCQF2J5IV03Fsfy.iyPo43qc0W2LleGOkDpVFxk39uuut91lwY2f9XobyobYpTx0DvRysFDx0
+
+project_root_dir: /app
+project_cert_dir: "{{ project_root_dir }}/certs"
+script_dir: "{{ project_root_dir }}/scripts"
+config_dir: "{{ project_root_dir }}/config"

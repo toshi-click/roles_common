@@ -1,0 +1,59 @@
+---
+- name: apt install common tools
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - ansible
+    - chrony
+    - ibus-mozc
+    - language-pack-ja-base
+    - language-pack-ja
+    - manpages-ja-dev
+    - manpages-ja
+    - postfix
+
+- name: create locale ja_JP.UTF-8
+  locale_gen:
+    name: ja_JP.UTF-8
+
+- name: "set-locale"
+  shell: update-locale LANG=ja_JP.UTF-8
+  check_mode: no
+
+# Ubuntu Japanese Teamリポジトリを追加する
+- name: set ubuntu-ja-archive gpg key
+  apt_key:
+    url: "https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg"
+    state: present
+
+- name: set ubuntu-jp-ppa-keyring gpg key
+  apt_key:
+    url: "https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg"
+    state: present
+
+- name: "ubuntu-ja repo set"
+  get_url:
+    url: "https://www.ubuntulinux.jp/sources.list.d/bionic.list"
+    dest: /etc/apt/sources.list.d/ubuntu-ja.list
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Set timezone to Asia/Tokyo
+  file:
+    src: /usr/share/zoneinfo/Asia/Tokyo
+    path: /etc/localtime
+    state: link
+    force: yes
+
+- name: update timezone
+  command: dpkg-reconfigure -f noninteractive tzdata
+  check_mode: no
+
+- name: set state chrony
+  systemd:
+    name: chrony
+    state: restarted
+    enabled: yes
