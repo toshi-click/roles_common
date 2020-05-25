@@ -7,7 +7,7 @@
   user:
     name: "{{ manage_user_name }}"
     state: present
-    password: "{{ manage_user.password }}"
+    password: "{{ manage_user_password }}"
     group: "{{ manage_user_group }}"
     shell: /bin/bash
 
