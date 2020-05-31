@@ -97,7 +97,7 @@
     mode: 0700
 
 - name: "create /home/{{ ansible_user_name }}/.ssh/config"
-  template:
+  copy:
     src: "home/ansible/.ssh/config"
     dest: "/home/{{ ansible_user_name }}/.ssh/config"
     owner: "{{ ansible_user_name }}"
@@ -106,7 +106,7 @@
 
 # add key
 - name: authorized_keys
-  template:
+  copy:
     src: "home/ansible/.ssh/authorized_keys"
     dest: "/home/{{ ansible_user_name }}/.ssh/authorized_keys"
     owner: "{{ ansible_user_name }}"
