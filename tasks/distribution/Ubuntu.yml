@@ -24,24 +24,27 @@
   shell: update-locale LANG=ja_JP.UTF-8
   check_mode: no
 
-# Ubuntu Japanese Teamリポジトリを追加する
-- name: set ubuntu-ja-archive gpg key
-  apt_key:
-    url: "https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg"
-    state: present
+- block:
+    # Ubuntu Japanese Teamリポジトリを追加する
+    - name: set ubuntu-ja-archive gpg key
+      apt_key:
+        url: "https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg"
+        state: present
 
-- name: set ubuntu-jp-ppa-keyring gpg key
-  apt_key:
-    url: "https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg"
-    state: present
+    - name: set ubuntu-jp-ppa-keyring gpg key
+      apt_key:
+        url: "https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg"
+        state: present
 
-- name: "ubuntu-ja repo set"
-  get_url:
-    url: "https://www.ubuntulinux.jp/sources.list.d/focal.list"
-    dest: /etc/apt/sources.list.d/ubuntu-ja.list
-    owner: root
-    group: root
-    mode: 0644
+    - name: "ubuntu-ja repo set"
+      get_url:
+        url: "https://www.ubuntulinux.jp/sources.list.d/focal.list"
+        dest: /etc/apt/sources.list.d/ubuntu-ja.list
+        owner: root
+        group: root
+        mode: 0644
+
+  when: japanease
 
 - name: Set timezone to Asia/Tokyo
   file:
