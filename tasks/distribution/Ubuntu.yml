@@ -37,7 +37,7 @@
 
 - name: "ubuntu-ja repo set"
   get_url:
-    url: "https://www.ubuntulinux.jp/sources.list.d/bionic.list"
+    url: "https://www.ubuntulinux.jp/sources.list.d/focal.list"
     dest: /etc/apt/sources.list.d/ubuntu-ja.list
     owner: root
     group: root
