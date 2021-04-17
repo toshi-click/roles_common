@@ -1,4 +1,5 @@
 ---
+japanease: true
 manage_user_name: toshi
 manage_user_group: toshi
 # パスワード生成は「python -c 'import crypt; print crypt.crypt("password", "$6$toshitoshi$")'」
