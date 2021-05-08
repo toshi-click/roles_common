@@ -44,6 +44,14 @@
     group: "{{ manage_user_group }}"
     mode: 0644
 
+- name: set history
+  copy:
+    src: "etc/profile.d/history.sh"
+    dest: "/etc/profile.d/history.sh"
+    owner: root
+    group: root
+    mode: 0755
+
 - name: add kernel parameters and reload
   sysctl:
     name: "{{ item.name }}"
