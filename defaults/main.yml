@@ -1,5 +1,5 @@
 ---
-japanease: true
+japanease: false
 manage_user_name: toshi
 manage_user_group: toshi
 # パスワード生成は「python -c 'import crypt; print crypt.crypt("password", "$6$toshitoshi$")'」
@@ -14,6 +14,7 @@ hostname: "{{ inventory_hostname }}"
 hosts_setting:
   - {name: "localhost", ip: 127.0.0.1}
 
+ansible_user_create: false
 ansible_user_name: ansible
 ansible_user_group: ansible
 # パスワード生成は「python -c 'import crypt; print crypt.crypt("password", "$6$ansible$")'」などで。
