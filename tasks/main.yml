@@ -91,45 +91,45 @@
     backup: true
 
 - block:
-  - name: "create group {{ ansible_user_group }}"
-    group:
-      name: "{{ ansible_user_group }}"
+    - name: "create group {{ ansible_user_group }}"
+      group:
+        name: "{{ ansible_user_group }}"
 
-  - name: "users exist name:{{ ansible_user_name }} group:{{ ansible_user_group }}"
-    user:
-      name: "{{ ansible_user_name }}"
-      state: present
-      password: "{{ ansible_user_password }}"
-      group: "{{ ansible_user_group }}"
+    - name: "users exist name:{{ ansible_user_name }} group:{{ ansible_user_group }}"
+      user:
+        name: "{{ ansible_user_name }}"
+        state: present
+        password: "{{ ansible_user_password }}"
+        group: "{{ ansible_user_group }}"
 
-  - name: "directory create /home/{{ ansible_user_name }}/.ssh"
-    file:
-      path: "/home/{{ ansible_user_name }}/.ssh"
-      state: directory
-      owner: "{{ ansible_user_name }}"
-      group: "{{ ansible_user_group }}"
-      mode: 0700
-      backup: true
+    - name: "directory create /home/{{ ansible_user_name }}/.ssh"
+      file:
+        path: "/home/{{ ansible_user_name }}/.ssh"
+        state: directory
+        owner: "{{ ansible_user_name }}"
+        group: "{{ ansible_user_group }}"
+        mode: 0700
+        backup: true
 
-  - name: "create /home/{{ ansible_user_name }}/.ssh/config"
-    copy:
-      src: "home/ansible/.ssh/config"
-      dest: "/home/{{ ansible_user_name }}/.ssh/config"
-      owner: "{{ ansible_user_name }}"
-      group: "{{ ansible_user_group }}"
-      mode: 0600
-      backup: true
+    - name: "create /home/{{ ansible_user_name }}/.ssh/config"
+      copy:
+        src: "home/ansible/.ssh/config"
+        dest: "/home/{{ ansible_user_name }}/.ssh/config"
+        owner: "{{ ansible_user_name }}"
+        group: "{{ ansible_user_group }}"
+        mode: 0600
+        backup: true
 
-  # add key
-  - name: authorized_keys
-    copy:
-      src: "home/ansible/.ssh/authorized_keys"
-      dest: "/home/{{ ansible_user_name }}/.ssh/authorized_keys"
-      owner: "{{ ansible_user_name }}"
-      group: "{{ ansible_user_group }}"
-      mode: 0600
-      backup: true
-when: ansible_user_create
+    # add key
+    - name: authorized_keys
+      copy:
+        src: "home/ansible/.ssh/authorized_keys"
+        dest: "/home/{{ ansible_user_name }}/.ssh/authorized_keys"
+        owner: "{{ ansible_user_name }}"
+        group: "{{ ansible_user_group }}"
+        mode: 0600
+        backup: true
+  when: ansible_user_create
 
 - name: include distribution tasks
   include_tasks: '{{ loop_distribution }}'
