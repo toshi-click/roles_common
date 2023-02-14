@@ -20,6 +20,24 @@
     mode: 0700
 
 # add key
+- name: ssh_key
+  copy:
+    src: "{{ common_ssh_id_rsa_path | default("id_rsa") }}"
+    dest: "/home/{{ manage_user_name }}/.ssh/id_rsa"
+    owner: "{{ manage_user_name }}"
+    group: "{{ manage_user_group }}"
+    mode: 0600
+    backup: true
+
+- name: git_key
+  copy:
+    src: "{{ common_ssh_git_key_path | default("git_key") }}"
+    dest: "/home/{{ manage_user_name }}/.ssh/gitkey"
+    owner: "{{ manage_user_name }}"
+    group: "{{ manage_user_group }}"
+    mode: 0600
+    backup: true
+
 - name: authorized_keys
   copy:
     src: "home/manage_user/.ssh/authorized_keys"
