@@ -22,7 +22,7 @@
 # add key
 - name: ssh_key
   copy:
-    src: "{{ common_ssh_id_rsa_path | default("id_rsa") }}"
+    src: "{{ common_ssh_id_rsa_path | default('id_rsa') }}"
     dest: "/home/{{ manage_user_name }}/.ssh/id_rsa"
     owner: "{{ manage_user_name }}"
     group: "{{ manage_user_group }}"
@@ -31,7 +31,7 @@
 
 - name: git_key
   copy:
-    src: "{{ common_ssh_git_key_path | default("git_key") }}"
+    src: "{{ common_ssh_git_key_path | default('git_key') }}"
     dest: "/home/{{ manage_user_name }}/.ssh/gitkey"
     owner: "{{ manage_user_name }}"
     group: "{{ manage_user_group }}"
