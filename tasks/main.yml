@@ -1,4 +1,13 @@
 ---
+- name: "put /etc/sudoers.d/{{ sudo_user_name }}"
+  template:
+    src: etc/sudoers.d/user_sudo
+    dest: "/etc/sudoers.d/{{ sudo_user_name }}"
+    owner: root
+    group: root
+    mode: 0440
+    backup: true
+
 - name: "create group {{ manage_user_group }}"
   group:
     name: "{{ manage_user_group }}"
@@ -206,7 +215,6 @@
   user:
     name: "{{ root_user_name }}"
     password: "{{ root_user_password }}"
-
 
 - name: restart postfix
   systemd:
