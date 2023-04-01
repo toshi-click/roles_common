@@ -149,26 +149,71 @@
         backup: true
   when: ansible_user_create
 
-- name: include distribution tasks
-  include_tasks: '{{ loop_distribution }}'
-  with_first_found:
-    - files:
-        - '{{ distribution }}-{{ distribution_version }}.yml'
-        - '{{ distribution }}-{{ distribution_major_version }}.yml'
-        - '{{ distribution }}.yml'
-        - '{{ ansible_os_family }}.yml'
-        - '{{ ansible_system }}.yml'
-        - 'defaults.yml'
-      paths:
-        - 'distribution'
-  loop_control:
-    loop_var: loop_distribution
+- name: apt install common tools
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
   vars:
-    distribution: '{{ ansible_distribution }}'
-    distribution_version: '{{ ansible_distribution_version }}'
-    distribution_major_version: '{{ ansible_distribution_major_version }}'
+    packages:
+      - ansible
+      - chrony
+      - ibus-mozc
+      - language-pack-ja-base
+      - language-pack-ja
+      - manpages-ja-dev
+      - manpages-ja
+      - postfix
+
+- name: create locale ja_JP.UTF-8
+  locale_gen:
+    name: ja_JP.UTF-8
+
+- name: "set-locale"
+  shell: update-locale LANG=ja_JP.UTF-8
+  check_mode: no
+
+- name: Set timezone to Asia/Tokyo
+  file:
+    src: /usr/share/zoneinfo/Asia/Tokyo
+    path: /etc/localtime
+    state: link
+    force: yes
+
+- name: update timezone
+  command: dpkg-reconfigure -f noninteractive tzdata
+  check_mode: no
+
+- name: set state chrony
+  systemd:
+    name: chrony
+    state: restarted
+    enabled: yes
+
+# ipv6よりもipv4を優先する設定
+# https://qastack.jp/ubuntu/32298/prefer-a-ipv4-dns-lookups-before-aaaaipv6-lookups
+- name: put /etc/gai.conf file ipv6 than also ipv4 preferred preference
+  copy:
+    src: etc/gai.conf
+    dest: /etc/gai.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
 
 - name: "root user password change"
   user:
     name: "{{ root_user_name }}"
     password: "{{ root_user_password }}"
+
+
+- name: restart postfix
+  systemd:
+    name: postfix
+    state: restarted
+    enabled: yes
+
+- name: newaliases
+  command: newaliases
+  check_mode: no
