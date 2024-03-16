@@ -159,13 +159,8 @@
   when: ansible_user_create
 
 - name: apt install common tools
-  apt:
-    name: "{{ packages }}"
-    update_cache: yes
-    cache_valid_time: 3600
-    state: present
-  vars:
-    packages:
+  ansible.builtin.package:
+    name:
       - ansible
       - chrony
       - ibus-mozc
@@ -174,6 +169,7 @@
       - manpages-ja-dev
       - manpages-ja
       - postfix
+    state: present
 
 - name: create locale ja_JP.UTF-8
   locale_gen:
