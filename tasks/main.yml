@@ -159,7 +159,6 @@
       - language-pack-ja
       - manpages-ja-dev
       - manpages-ja
-      - postfix
     state: present
 
 - name: create locale ja_JP.UTF-8
@@ -202,16 +201,6 @@
   user:
     name: "{{ root_user_name }}"
     password: "{{ root_user_password }}"
-
-- name: restart postfix
-  systemd:
-    name: postfix
-    state: restarted
-    enabled: yes
-
-- name: newaliases
-  command: newaliases
-  check_mode: no
 
 - name: Install Ubuntu common dev tool packages
   ansible.builtin.package:
