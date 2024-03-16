@@ -15,9 +15,6 @@ common_ssh_git_key_path: "git_key"
 
 hostname: "{{ inventory_hostname }}"
 
-hosts_setting:
-  - {name: "localhost", ip: 127.0.0.1}
-
 ansible_user_create: false
 ansible_user_name: ansible
 ansible_user_group: ansible

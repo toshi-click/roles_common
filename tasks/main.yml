@@ -108,15 +108,6 @@
   hostname:
     name: "{{ hostname }}"
 
-- name: Generate /etc/hosts file
-  template:
-    src: "etc/hosts"
-    dest: "/etc/hosts"
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-
 - block:
     - name: "create group {{ ansible_user_group }}"
       group:
@@ -221,3 +212,31 @@
 - name: newaliases
   command: newaliases
   check_mode: no
+
+- name: Install Ubuntu common dev tool packages
+  ansible.builtin.package:
+    name:
+      - ansible
+      - bash-completion
+      - bmon
+      - curl
+      - git
+      - htop
+      - iftop
+      - iotop
+      - iproute2
+      - iputils-ping
+      - iptraf
+      - iptraf-ng
+      - mailutils
+      - net-tools
+      - nmap
+      - sudo
+      - sysstat
+      - telnet
+      - tree
+      - unzip
+      - vim
+      - wget
+      - zip
+    state: present
